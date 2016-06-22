@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TV_Guide</string>
+    <string name="channels_header">Канали</string>
+</resources>
