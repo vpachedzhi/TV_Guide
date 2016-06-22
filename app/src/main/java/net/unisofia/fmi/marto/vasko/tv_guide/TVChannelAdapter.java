@@ -30,20 +30,17 @@ public class TVChannelAdapter extends ArrayAdapter<TVChannel> {
 
         View row = convertView;
         TVChannelHolder holder = null;
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new TVChannelHolder();
-            holder.title = (TextView)row.findViewById(R.id.title);
-            holder.icon = (ImageView)row.findViewById(R.id.icon);
+            holder.title = (TextView) row.findViewById(R.id.title);
+            holder.icon = (ImageView) row.findViewById(R.id.icon);
 
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (TVChannelHolder)row.getTag();
+        } else {
+            holder = (TVChannelHolder) row.getTag();
         }
 
         TVChannel tvChannel = data[position];
@@ -53,7 +50,7 @@ public class TVChannelAdapter extends ArrayAdapter<TVChannel> {
         return row;
     }
 
-    static  class  TVChannelHolder{
+    static class TVChannelHolder {
         public TextView title;
         public ImageView icon;
     }

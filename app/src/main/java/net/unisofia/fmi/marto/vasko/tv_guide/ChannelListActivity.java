@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 
-
 public class ChannelListActivity extends AppCompatActivity {
 
     final static TVChannel channelData[] = new TVChannel[]
@@ -52,13 +51,12 @@ public class ChannelListActivity extends AppCompatActivity {
 
     }
 
-    private void showDetails(int id){
+    private void showDetails(int id) {
 
         Intent intent = new Intent(this, ChannelInfoActivity.class);
-        intent.putExtra("id", channelData[id-1].id);
+        intent.putExtra("id", channelData[id - 1].id);
         startActivity(intent);
     }
-
 
 
 }

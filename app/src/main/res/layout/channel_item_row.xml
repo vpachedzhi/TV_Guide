@@ -13,7 +13,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/icon"/>
+        android:id="@+id/icon" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -26,5 +26,5 @@
         android:textColor="#000000"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/title"/>
+        android:id="@+id/title" />
 </LinearLayout>
