@@ -1,6 +1,7 @@
 package net.unisofia.fmi.marto.vasko.tv_guide;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.RelativeLayout;
@@ -17,19 +18,48 @@ import java.util.List;
 
 public class ChannelInfoActivity extends AppCompatActivity {
 
+
+    ProgressDialog mProgressDialog;
+    TextView textView = new TextView(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_channel_info);
 
-        final TextView textView = new TextView(this);
-        textView.setTextSize(20);
-        Intent intent = getIntent();
-        //textView.setText(intent.getExtras().get("id").toString());
-        textView.setText(test());
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.content);
-        layout.addView(textView);
+        new ParseURL().execute();
+
+    }
+
+    private class ParseURL extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = new ProgressDialog(ChannelInfoActivity.this);
+            mProgressDialog.setTitle("Android Basic JSoup Tutorial");
+            mProgressDialog.setMessage("Loading...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            return test();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // Set title into TextView
+
+            textView.setTextSize(20);
+            //textView.setText(intent.getExtras().get("id").toString());
+            textView.setText(result);
+            RelativeLayout layout = (RelativeLayout) findViewById(R.id.content);
+            layout.addView(textView);
+            mProgressDialog.dismiss();
+        }
     }
 
     public String test(){
