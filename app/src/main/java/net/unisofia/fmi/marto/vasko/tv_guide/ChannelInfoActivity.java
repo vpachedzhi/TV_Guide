@@ -137,13 +137,22 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
                             "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")
                     .get();
 
-            Elements elements = doc.select("#events > li > a");
+            Elements elements = doc.select("#events > li");
 
 
             for (Element el : elements) {
                 BroadCast bc = new BroadCast();
-                bc.time = el.child(0).ownText();
-                bc.telecast = el.child(1).ownText();
+
+
+                if (el.child(0).tagName().equals("a")) {
+                    el = el.child(0);
+                    bc.time = el.child(0).ownText();
+                    String description = el.ownText().isEmpty() ? "" : el.ownText().substring(2);
+                    bc.telecast = el.child(1).ownText() + description;
+                } else {
+                    bc.time = el.child(0).ownText();
+                    bc.telecast = el.ownText();
+                }
                 schedule.add(bc);
             }
 
