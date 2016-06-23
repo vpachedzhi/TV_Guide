@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import org.jsoup.Jsoup;
@@ -20,16 +21,101 @@ import java.util.List;
 
 public class ChannelInfoActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private List<String> categories = new ArrayList<>();
-
+    private List<String> dropDownDays = new ArrayList<>();
     private static final String BaseURL = "http://tv.dir.bg/tv_channel.php";
     private String channelCode;
 
     // only for today for now
     private static final int offset = 0;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+        setContentView(R.layout.activity_channel_info);
+        Integer id = (Integer) getIntent().getExtras().get("id");
+        channelCode = id.toString();
+        Spinner spinner = (Spinner) findViewById(R.id.spinnerWeek);
+        spinner.setOnItemSelectedListener(this);
+        initializeDays();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropDownDays);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(1);
 
-    private String getDate(int offset){
+        /// LIst view filled with the info for today
+        new ParseURL(1).execute();
+    }
+
+    private void update(ArrayList<BroadCast> broadCastArrayList) {
+
+        BroadCastAdapter adapter = new BroadCastAdapter(this, R.layout.broadcast_list_row, broadCastArrayList);
+
+        ListView listView = (ListView) findViewById(R.id.broadcastListView);
+        listView.setAdapter(adapter);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item was selected. You can retrieve the selected item using
+        // parent.getItemAtPosition(pos)
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    private void initializeDays() {
+
+        for (int i = -1; i < 6; i++) {
+            String day = getDateAndDay(i);
+            day = i == 0 ? day + " (Днес)" : day;
+            dropDownDays.add(day);
+        }
+
+    }
+
+    private String getDateAndDay(int offset) {
+        String week[] = {
+                "Неделя",
+                "Понеделник",
+                "Вторник",
+                "Сряда",
+                "Четвъртък",
+                "Петък",
+                "Събота"
+        };
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DAY_OF_MONTH, offset);
+        Integer d = now.get(Calendar.DAY_OF_MONTH);
+        String date = d.toString();
+        int day = (now.get(Calendar.DAY_OF_WEEK) - 1) % 7;
+
+        return date + " " + week[day];
+    }
+
+    private class ParseURL extends AsyncTask<String, Void, ArrayList<BroadCast>> {
+
+        private int position;
+
+        public ParseURL(int position) {
+            this.position = position;
+        }
+
+        @Override
+        protected ArrayList<BroadCast> doInBackground(String... strings) {
+
+            return getSchedule(this.position);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<BroadCast> result) {
+
+            //// function na ChannelInfoActivity ceto priema result ot BroadCast list
+            update(result);
+        }
+    }
+
+    private String getDate(int offset) {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DAY_OF_MONTH, offset);
         Integer d = now.get(Calendar.DAY_OF_MONTH);
@@ -39,11 +125,12 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
         month = m < 10 ? "0" + month : month;
         return day + "." + month;
     }
-    private ArrayList<BroadCast> getSchedule(int offset){
+
+    private ArrayList<BroadCast> getSchedule(int offset) {
 
         ArrayList<BroadCast> schedule = new ArrayList<>();
 
-        String channelURL = BaseURL + "?id=" + channelCode + "&dd=" +getDate(offset);
+        String channelURL = BaseURL + "?id=" + channelCode + "&dd=" + getDate(offset);
 
         try {
             Document doc = Jsoup
@@ -67,75 +154,5 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
             e.printStackTrace();
         }
         return schedule;
-
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getSupportActionBar().hide();
-        setContentView(R.layout.activity_channel_info);
-        Integer id = (Integer) getIntent().getExtras().get("id");
-        Spinner spinner = (Spinner) findViewById(R.id.spinnerWeek);
-        spinner.setOnItemSelectedListener(this);
-        categories.add("Automobile");
-        categories.add("Business Services");
-        categories.add("Computers");
-        categories.add("Education");
-        categories.add("Personal");
-        categories.add("Travel");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-        spinner.setSelection(1);
-
-
-    }
-
-    private class ParseURL extends AsyncTask<String, Void, ArrayList<BroadCast>> {
-
-
-        @Override
-        protected ArrayList<BroadCast> doInBackground(String... strings) {
-
-            return getSchedule(offset);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<BroadCast> result) {
-
-            StringBuilder sb = new StringBuilder();
-            for (BroadCast bc : result){
-                sb.append(bc.time);
-                sb.append(" ");
-                sb.append(bc.telecast);
-            }
-        }
-    }
-
-    private void update(int position) {
-
-    }
-
-    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        // An item was selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos)
-        update(pos);
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback
-    }
-
-    private void initializeDays() {
-
-
-    }
-
-
 }
