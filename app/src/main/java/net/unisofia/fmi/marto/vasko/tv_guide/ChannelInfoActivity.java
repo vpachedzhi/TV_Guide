@@ -25,9 +25,6 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
     private static final String BaseURL = "http://tv.dir.bg/tv_channel.php";
     private String channelCode;
 
-    // only for today for now
-    private static final int offset = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +55,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
+        new ParseURL(pos).execute();
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
@@ -117,7 +115,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
 
     private String getDate(int offset) {
         Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_MONTH, offset);
+        now.add(Calendar.DAY_OF_MONTH, offset - 1);
         Integer d = now.get(Calendar.DAY_OF_MONTH);
         String day = d.toString();
         Integer m = now.get(Calendar.MONTH) + 1;
