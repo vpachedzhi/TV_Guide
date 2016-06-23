@@ -18,29 +18,22 @@ import java.util.List;
 
 public class ChannelInfoActivity extends AppCompatActivity {
 
-
-    ProgressDialog mProgressDialog;
-    TextView textView = new TextView(this);
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_channel_info);
-
-        new ParseURL().execute();
+        TextView textView = new TextView(this);
+        new ParseURL(textView).execute();
 
     }
 
     private class ParseURL extends AsyncTask<String, Void, String> {
 
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressDialog = new ProgressDialog(ChannelInfoActivity.this);
-            mProgressDialog.setTitle("Android Basic JSoup Tutorial");
-            mProgressDialog.setMessage("Loading...");
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.show();
+        private TextView view;
+
+        public ParseURL(TextView v) {
+            this.view = v;
         }
 
         @Override
@@ -53,12 +46,11 @@ public class ChannelInfoActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             // Set title into TextView
 
-            textView.setTextSize(20);
+            view.setTextSize(20);
             //textView.setText(intent.getExtras().get("id").toString());
-            textView.setText(result);
+            view.setText(result);
             RelativeLayout layout = (RelativeLayout) findViewById(R.id.content);
-            layout.addView(textView);
-            mProgressDialog.dismiss();
+            layout.addView(view);
         }
     }
 
