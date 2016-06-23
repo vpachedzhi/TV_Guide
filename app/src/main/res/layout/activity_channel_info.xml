@@ -10,4 +10,19 @@
     tools:context="net.unisofia.fmi.marto.vasko.tv_guide.ChannelInfoActivity"
     android:id="@+id/content">
 
+    <Spinner
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerWeek"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/broadcastListView"
+        android:layout_below="@+id/spinnerWeek"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
