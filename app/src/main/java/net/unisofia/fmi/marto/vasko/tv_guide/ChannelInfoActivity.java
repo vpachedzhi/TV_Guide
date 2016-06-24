@@ -1,5 +1,10 @@
 package net.unisofia.fmi.marto.vasko.tv_guide;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,6 +31,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
     private List<String> dropDownDays = new ArrayList<>();
     private static final String BaseURL = "http://tv.dir.bg/tv_channel.php";
     private String channelCode;
+    private boolean hasInternetConnection = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +56,16 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
 
     private void update(ArrayList<BroadCast> broadCastArrayList) {
 
-        BroadCastAdapter adapter = new BroadCastAdapter(this, R.layout.broadcast_list_row, broadCastArrayList);
-
-        ListView listView = (ListView) findViewById(R.id.broadcastListView);
-        listView.setAdapter(adapter);
+        if (!hasInternetConnection) {
+            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show();
+            hasInternetConnection = true;
+        } else if (broadCastArrayList.isEmpty()) {
+            Toast.makeText(this, "Error getting channels' data", Toast.LENGTH_LONG).show();
+        } else {
+            BroadCastAdapter adapter = new BroadCastAdapter(this, R.layout.broadcast_list_row, broadCastArrayList);
+            ListView listView = (ListView) findViewById(R.id.broadcastListView);
+            listView.setAdapter(adapter);
+        }
     }
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -161,8 +174,33 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            //e.printStackTrace();
+
+            if (!haveNetworkConnection()) {
+                hasInternetConnection = false;
+            }
+
+        } finally {
+            return schedule;
         }
-        return schedule;
     }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
+    }
+
 }
