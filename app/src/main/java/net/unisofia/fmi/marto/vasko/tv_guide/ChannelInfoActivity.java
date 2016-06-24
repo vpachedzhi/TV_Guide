@@ -1,8 +1,6 @@
 package net.unisofia.fmi.marto.vasko.tv_guide;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -51,7 +49,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
         spinner.setSelection(1);
 
         /// LIst view filled with the info for today
-        new ParseURL(1).execute();
+        new URLParser(1).execute();
     }
 
     private void update(ArrayList<BroadCast> broadCastArrayList) {
@@ -71,7 +69,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
-        new ParseURL(pos).execute();
+        new URLParser(pos).execute();
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
@@ -107,11 +105,11 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
         return date + " " + week[day];
     }
 
-    private class ParseURL extends AsyncTask<String, Void, ArrayList<BroadCast>> {
+    private class URLParser extends AsyncTask<String, Void, ArrayList<BroadCast>> {
 
         private int position;
 
-        public ParseURL(int position) {
+        public URLParser(int position) {
             this.position = position;
         }
 
