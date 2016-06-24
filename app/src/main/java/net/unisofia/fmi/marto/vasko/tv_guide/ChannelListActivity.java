@@ -55,6 +55,7 @@ public class ChannelListActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, ChannelInfoActivity.class);
         intent.putExtra("id", channelData[id - 1].id);
+        intent.putExtra("channel_name", channelData[id - 1].title);
         startActivity(intent);
     }
 

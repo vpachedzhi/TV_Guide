@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,10 +33,12 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
         setContentView(R.layout.activity_channel_info);
         Integer id = (Integer) getIntent().getExtras().get("id");
         channelCode = id.toString();
+        TextView channelName = (TextView) findViewById(R.id.channel_name);
+        channelName.setText(getIntent().getExtras().get("channel_name").toString());
         Spinner spinner = (Spinner) findViewById(R.id.spinnerWeek);
         spinner.setOnItemSelectedListener(this);
         initializeDays();
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropDownDays);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, dropDownDays);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(1);
