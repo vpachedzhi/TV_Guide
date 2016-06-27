@@ -54,6 +54,7 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
 
     private void update(ArrayList<BroadCast> broadCastArrayList) {
 
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         if (!hasInternetConnection) {
             Toast.makeText(this, "No Internet Connection", Toast.LENGTH_LONG).show();
             hasInternetConnection = true;
@@ -121,8 +122,6 @@ public class ChannelInfoActivity extends AppCompatActivity implements AdapterVie
 
         @Override
         protected void onPostExecute(ArrayList<BroadCast> result) {
-
-            //// function na ChannelInfoActivity ceto priema result ot BroadCast list
             update(result);
         }
     }

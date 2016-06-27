@@ -5,6 +5,7 @@
     android:textSize="30dp"
     android:gravity="left"
     android:textStyle="bold"
-    android:padding="3dp">
+    android:padding="3dp"
+    android:textColor="#000000">
 
 </TextView>

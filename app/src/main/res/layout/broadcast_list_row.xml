@@ -15,7 +15,7 @@
         android:layout_marginBottom="5dp"
         android:id="@+id/time"
         android:textStyle="bold"
-        android:textSize="33dp" />
+        android:textSize="30dp" />
 
     <TextView
         android:layout_width="fill_parent"
